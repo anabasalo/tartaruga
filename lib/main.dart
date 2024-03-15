@@ -32,6 +32,17 @@ class MyAppState extends ChangeNotifier {
     current = WordPair.random();
     notifyListeners();
   }
+
+  var favorites = <WordPair>[];
+
+  void toggleFavorite() {
+    if (favorites.contains(current)) {
+      favorites.remove(current);
+    } else {
+      favorites.add(current);
+    }
+    notifyListeners();
+  }
 }
 
 class MyHomePage extends StatelessWidget {
@@ -41,17 +52,32 @@ class MyHomePage extends StatelessWidget {
     var pair = appState.current;
 
     return Scaffold(
-      body: Column(
-        children: [
-          Text('Salvem as tartarugas!'),
-          BigCard(pair: pair),
-          ElevatedButton(
-            onPressed: () {
-              appState.getNext();
-            },
-            child: Text('Next'),
-          ),
-        ],
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Salvem as tartarugas!'),
+            SizedBox(height: 15),
+            BigCard(pair: pair),
+            SizedBox(height: 15),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ElevatedButton(
+                  onPressed: () {},
+                  child: Text('❤ Like'),
+                ),
+                SizedBox(width: 10),
+                ElevatedButton(
+                  onPressed: () {
+                    appState.getNext();
+                  },
+                  child: Text('Next'),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -75,9 +101,14 @@ class BigCard extends StatelessWidget {
 
     return Card(
       color: theme.colorScheme.primary,
+      elevation: 10,
       child: Padding(
         padding: const EdgeInsets.all(20.0),
-        child: Text(pair.asLowerCase, style: style),
+        child: Text(
+          pair.asLowerCase,
+          style: style,
+          semanticsLabel: "${pair.first} ${pair.second}",
+        ),
       ),
     );
   }
